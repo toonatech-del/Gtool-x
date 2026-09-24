@@ -22,6 +22,11 @@ jobs:
           elif [ -f settings.gradle ]; then
             sed -i 's/rootProject.name = .*/rootProject.name = "GtoolX"/' settings.gradle
           fi
+          # Missing environment files create karna
+          touch .env
+          touch .env.example
+          touch app/.env 2>/dev/null || true
+          touch app/.env.example 2>/dev/null || true
 
       - name: Set up JDK 21
         uses: actions/setup-java@v4
