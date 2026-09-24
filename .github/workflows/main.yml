@@ -17,23 +17,22 @@ jobs:
             cp -r temp_extracted/*/* . 2>/dev/null || cp -r temp_extracted/* . 2>/dev/null || true
             rm -rf temp_extracted
           fi
-          # Settings file mein space hata kar clean name set karna
           if [ -f settings.gradle.kts ]; then
             sed -i 's/rootProject.name = .*/rootProject.name = "GtoolX"/' settings.gradle.kts
           elif [ -f settings.gradle ]; then
             sed -i 's/rootProject.name = .*/rootProject.name = "GtoolX"/' settings.gradle
           fi
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
 
-      - name: Setup Gradle
+      - name: Setup Latest Gradle 9.3.1
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: '8.4'
+          gradle-version: '9.3.1'
           cache-disabled: true
 
       - name: Grant execute permission for gradlew
