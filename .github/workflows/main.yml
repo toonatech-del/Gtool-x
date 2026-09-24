@@ -22,7 +22,6 @@ jobs:
           elif [ -f settings.gradle ]; then
             sed -i 's/rootProject.name = .*/rootProject.name = "GtoolX"/' settings.gradle
           fi
-          # Missing environment files create karna
           touch .env
           touch .env.example
           touch app/.env 2>/dev/null || true
@@ -33,6 +32,12 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+
+      - name: Generate Debug Keystore
+        run: |
+          keytool -genkeypair -v -keystore debug.keystore -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 -storepass android -keypass android -dname "CN=Android Debug,O=Android,C=US"
+          mkdir -p app
+          cp debug.keystore app/debug.keystore 2>/dev/null || true
 
       - name: Setup Latest Gradle 9.3.1
         uses: gradle/actions/setup-gradle@v3
