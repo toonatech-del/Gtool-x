@@ -10,12 +10,18 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Unzip and Setup Files
+      - name: Unzip and Fix Structure
         run: |
           if [ -f GTOOL-X-main.zip ]; then
             unzip -o GTOOL-X-main.zip -d temp_extracted
             cp -r temp_extracted/*/* . 2>/dev/null || cp -r temp_extracted/* . 2>/dev/null || true
             rm -rf temp_extracted
+          fi
+          # Settings file mein space hata kar clean name set karna
+          if [ -f settings.gradle.kts ]; then
+            sed -i 's/rootProject.name = .*/rootProject.name = "GtoolX"/' settings.gradle.kts
+          elif [ -f settings.gradle ]; then
+            sed -i 's/rootProject.name = .*/rootProject.name = "GtoolX"/' settings.gradle
           fi
 
       - name: Set up JDK 17
@@ -27,7 +33,8 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
-          gradle-version: '8.2'
+          gradle-version: '8.4'
+          cache-disabled: true
 
       - name: Grant execute permission for gradlew
         run: |
@@ -40,9 +47,9 @@ jobs:
           ANDROID_HOME: /usr/local/lib/android/sdk
         run: |
           if [ -f gradlew ]; then
-            ./gradlew assembleDebug --no-daemon
+            ./gradlew assembleDebug --no-daemon --no-build-cache
           else
-            gradle assembleDebug --no-daemon
+            gradle assembleDebug --no-daemon --no-build-cache
           fi
 
       - name: Upload APK
